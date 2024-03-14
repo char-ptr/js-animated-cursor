@@ -13,9 +13,20 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   </div>
 `;
 
-const state = initCursor(document.querySelector<HTMLElement>("#cursor")!);
+const state = initCursor(document.querySelector<HTMLElement>("#cursor")!, {
+	selector: {
+		button: {
+			size: 20,
+			trail_size: 0,
+		},
+	},
+	mouse_down: {
+		size: 20,
+		trail_size: 0,
+	},
+});
 (async () => {
-  requestAnimationFrame((delta) => {
-    do_render(state[0], delta);
-  });
+	requestAnimationFrame((delta) => {
+		do_render(state[0], delta);
+	});
 })();
