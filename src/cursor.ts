@@ -157,7 +157,7 @@ function draw_trail(
 	rotation: number,
 	speed = 1,
 ) {
-	const speed_clamp = Math.max(speed, 1);
+	const speed_clamp = Math.min(Math.max(speed, 1), 1.5);
 	// console.log(speed_clamp);
 	ctx.beginPath();
 	ctx.ellipse(
