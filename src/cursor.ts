@@ -1,14 +1,37 @@
 // test
+type RGB = `rgb(${string})`;
+type RGBA = `rgba(${string})`;
+type HEX = `#${string}`;
+type HSL = `hsl(${string})`;
+type HSLA = `hsla(${string})`;
+type VAR = `var(${string})`;
+
+type CssGlobals = "inherit" | "initial" | "revert" | "unset";
+
+export type CssColor =
+	| "currentColor"
+	| "transparent"
+	| RGB
+	| RGBA
+	| HEX
+	| HSL
+	| HSLA
+	| VAR
+	| CssGlobals;
 interface BaseConfig {
 	size: number;
+	colour: CssColor;
 	trail_speed: number;
 	trail_size: number;
+	trail_colour: CssColor;
 }
 function MakeBaseConfig(base_config?: Partial<BaseConfig>): BaseConfig {
 	return {
 		size: base_config?.size ?? 10,
 		trail_speed: base_config?.trail_speed ?? 1,
 		trail_size: base_config?.trail_size ?? 10,
+		trail_colour: base_config?.trail_colour ?? "rgb(255,255,255)",
+		colour: base_config?.colour ?? "rgb(255,255,255)",
 	};
 }
 
@@ -27,7 +50,7 @@ interface CursorState {
 	config: ConfigData;
 }
 interface ConfigData {
-	cursor: BaseConfig;
+	cursor: Partial<BaseConfig>;
 	selector: { [x: string]: Partial<BaseConfig> };
 	mouse_down: Partial<BaseConfig>;
 }
@@ -37,7 +60,7 @@ function onTouchStart(state: CursorState, _e: TouchEvent) {
 }
 function onTouchEnd(state: CursorState, _e: TouchEvent) {
 	state.is_touch = false;
-	state.cursor = state.config.cursor;
+	state.cursor = MakeBaseConfig(state.config.cursor);
 }
 function onTouchMove(state: CursorState, e: TouchEvent) {
 	state.cursor_pos = [e.touches[0].clientX, e.touches[0].clientY];
@@ -49,7 +72,7 @@ function onResize(state: CursorState, _e: UIEvent) {
 }
 function onPointerUp(state: CursorState, _e: PointerEvent) {
 	state.cursor_down = false;
-	state.cursor = state.config.cursor;
+	state.cursor = MakeBaseConfig(state.config.cursor);
 	state.trail_pos = state.cursor_pos;
 }
 function onPointerDown(state: CursorState, _e: PointerEvent) {
@@ -82,7 +105,7 @@ function onMouseMove(state: CursorState, e: MouseEvent) {
 	if (!sz_check) {
 		state.cursor = state.cursor_down
 			? MakeBaseConfig(state.config.mouse_down)
-			: state.config.cursor;
+			: MakeBaseConfig(state.config.cursor);
 		if (state._last_szcheck) {
 			state.trail_pos = state.cursor_pos;
 		}
@@ -165,6 +188,7 @@ function draw_trail(
 	ctx: CanvasRenderingContext2D,
 	cursr: number[],
 	size: number,
+	colour: CssColor,
 	rotation: number,
 	speed = 1,
 ) {
@@ -179,7 +203,7 @@ function draw_trail(
 		0,
 		Math.PI * 2,
 	);
-	ctx.fillStyle = "rgba(255,255,255)";
+	ctx.fillStyle = colour;
 	ctx.fill();
 	ctx.closePath();
 }
@@ -187,10 +211,12 @@ function draw_cursor(
 	ctx: CanvasRenderingContext2D,
 	cursr: number[],
 	size: number,
+	colour: CssColor,
 ) {
+	console.log(colour, "colour");
 	ctx.beginPath();
 	ctx.arc(cursr[0], cursr[1], size, 0, Math.PI * 2);
-	ctx.fillStyle = "rgba(255,255,255)";
+	ctx.fillStyle = colour;
 	ctx.fill();
 	ctx.closePath();
 }
@@ -206,8 +232,12 @@ export function do_render(state: CursorState, delta: number) {
 		0.02,
 		delta_diff,
 	);
-	console.log(state._lerp_cursor);
-	draw_cursor(state.ctx, state.cursor_pos, state._lerp_cursor.size);
+	draw_cursor(
+		state.ctx,
+		state.cursor_pos,
+		state._lerp_cursor.size,
+		state.cursor.colour,
+	);
 	// only draw the trail if the cursor is not over a clickable element
 	if (state.cursor.trail_size !== 0) {
 		state._lerp_cursor.trail_size = damp_lerp(
@@ -242,6 +272,7 @@ export function do_render(state: CursorState, delta: number) {
 			state.ctx,
 			state.trail_pos,
 			state._lerp_cursor.trail_size,
+			state.cursor.trail_colour,
 			rot,
 			speed,
 		);
@@ -264,6 +295,7 @@ export function do_render(state: CursorState, delta: number) {
 			state.ctx,
 			state.trail_pos,
 			state._lerp_cursor.trail_size,
+			state.cursor.trail_colour,
 			rot,
 			speed,
 		);
