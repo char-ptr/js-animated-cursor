@@ -280,7 +280,6 @@ export function do_render(state: CursorState, delta: number) {
     0.02,
     delta_diff,
   );
-  console.log(state.cursor.image);
   if (state.cursor.image) {
     draw_cursor_img(
       state.ctx,
