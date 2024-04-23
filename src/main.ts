@@ -30,6 +30,7 @@ const state = initCursor(document.querySelector<HTMLElement>("#cursor")!, {
 });
 (async () => {
   requestAnimationFrame((delta) => {
+    console.log(delta);
     do_render(state[0], delta);
   });
 })();

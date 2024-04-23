@@ -1,1 +1,1 @@
-export { initCursor, do_render, deinitCursor } from "./cursor";
+export { initCursor, do_render, deinitCursor, type BaseConfig, type CssColor, type ConfigData, type CursorState } from "./cursor";

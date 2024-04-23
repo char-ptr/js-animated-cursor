@@ -18,7 +18,7 @@ export type CssColor =
   | HSLA
   | VAR
   | CssGlobals;
-interface BaseConfig {
+export interface BaseConfig {
   size: number;
   colour: CssColor;
   image?: string;
@@ -37,7 +37,7 @@ function MakeBaseConfig(base_config?: Partial<BaseConfig>): BaseConfig {
   };
 }
 
-interface CursorState {
+export interface CursorState {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   cursor: BaseConfig;
@@ -52,9 +52,18 @@ interface CursorState {
   config: ConfigData;
   _img_cache?: { [x: string]: HTMLImageElement };
 }
-interface ConfigData {
+export interface ConfigData {
+  /**
+   * default state for the cursor
+   */
   cursor: Partial<BaseConfig>;
+  /**
+   * use a selector as the key, when the mouse is over an element which matches it will use the value as the cursor config.
+   */
   selector: { [x: string]: Partial<BaseConfig> };
+  /**
+   * when the user is holding down the mouse button it will use this config
+   */
   mouse_down: Partial<BaseConfig>;
 }
 function onTouchStart(state: CursorState, _e: TouchEvent) {
@@ -192,6 +201,24 @@ export function deinitCursor(state: CursorState) {
   window.removeEventListener("touchend", onTouchEnd.bind(undefined, state));
   window.removeEventListener("touchmove", onTouchMove.bind(undefined, state));
 }
+/**
+ * initalizes a new cursor for the *parent* element.
+ *
+ * after calling this, you need to use the {@link do_render} function to render the cursor on every animation frame.
+ *
+ * ## notes
+ * in react you will want to use `useEffect`.
+ * on destructure make sure to call {@link deinitCursor}
+ *
+ * ## example
+ * ```ts
+ * let [state, _canvas] = initCursor(document.body)
+ *
+ *  requestAnimationFrame((delta) => {
+ *    do_render(state, delta);
+ * });
+ * ```
+ * */
 export function initCursor(parent: HTMLElement, config?: Partial<ConfigData>) {
   const canvas = document.createElement("canvas");
   const state = initCursorWithCanvas(canvas, config);

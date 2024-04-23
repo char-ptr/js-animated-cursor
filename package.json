@@ -2,7 +2,9 @@
 	"name": "js-animated-cursor",
 	"version": "0.2.3",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"module": "./dist/index.js",
 	"main": "./dist/index.cjs",
@@ -20,6 +22,7 @@
 		"semantic-release": "semantic-release"
 	},
 	"devDependencies": {
+		"@types/node": "^20.12.7",
 		"semantic-release": "^23.0.2",
 		"typescript": "^5.3.3",
 		"vite": "^5.1.5",
