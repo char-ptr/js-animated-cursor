@@ -164,6 +164,7 @@ export function initCursorWithCanvas(
     canvas,
     ctx,
     _lerp_cursor: new_config.cursor,
+    disable_blend: false,
     cursor: new_config.cursor,
     cursor_pos: [0, 0],
     cursor_down: false,
