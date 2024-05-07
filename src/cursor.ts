@@ -25,6 +25,7 @@ export interface BaseConfig {
   trail_speed: number;
   trail_size: number;
   trail_colour: CssColor;
+  disable_blend: boolean;
 }
 function MakeBaseConfig(base_config?: Partial<BaseConfig>): BaseConfig {
   return {
@@ -34,6 +35,7 @@ function MakeBaseConfig(base_config?: Partial<BaseConfig>): BaseConfig {
     trail_size: base_config?.trail_size ?? 10,
     trail_colour: base_config?.trail_colour ?? "rgb(255,255,255)",
     colour: base_config?.colour ?? "rgb(255,255,255)",
+    disable_blend: false,
   };
 }
 
@@ -41,6 +43,7 @@ export interface CursorState {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   cursor: BaseConfig;
+  disable_blend: false;
   _lerp_cursor: BaseConfig;
   cursor_pos: [number, number];
   trail_pos: [number, number];
@@ -269,6 +272,13 @@ function draw_cursor(
   ctx.closePath();
 }
 export function do_render(state: CursorState, delta: number) {
+  if (state.disable_blend !== state.cursor.disable_blend) {
+    if (state.cursor.disable_blend) {
+      state.canvas.style.mixBlendMode = "normal";
+    } else {
+      state.canvas.style.mixBlendMode = "difference";
+    }
+  }
   const delta_diff = delta - state._last_delta;
   state._last_delta = delta;
 
