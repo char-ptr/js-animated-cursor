@@ -35,7 +35,7 @@ function MakeBaseConfig(base_config?: Partial<BaseConfig>): BaseConfig {
     trail_size: base_config?.trail_size ?? 10,
     trail_colour: base_config?.trail_colour ?? "rgb(255,255,255)",
     colour: base_config?.colour ?? "rgb(255,255,255)",
-    disable_blend: false,
+    disable_blend: base_config?.disable_blend ?? false,
   };
 }
 
@@ -272,6 +272,7 @@ function draw_cursor(
   ctx.closePath();
 }
 export function do_render(state: CursorState, delta: number) {
+  console.log(state.cursor);
   if (state.disable_blend !== state.cursor.disable_blend) {
     if (state.cursor.disable_blend) {
       state.canvas.style.mixBlendMode = "normal";
