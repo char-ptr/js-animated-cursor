@@ -185,7 +185,7 @@ export function initCursorWithCanvas(
 		"pointerdown",
 		onPointerDown.bind(undefined, state),
 	);
-	window.addEventListener("mousemove", onMouseMove.bind(undefined, state));
+	window.addEventListener("pointermove", onMouseMove.bind(undefined, state));
 	window.addEventListener("resize", onResize.bind(undefined, state));
 	window.addEventListener("touchstart", onTouchStart.bind(undefined, state));
 	window.addEventListener("touchend", onTouchEnd.bind(undefined, state));
