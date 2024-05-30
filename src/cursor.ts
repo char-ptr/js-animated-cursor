@@ -223,11 +223,14 @@ export function deinitCursor(state: CursorState) {
  * });
  * ```
  * */
-export function initCursor(parent: HTMLElement, config?: Partial<ConfigData>) {
-	const canvas = document.createElement("canvas");
-	const state = initCursorWithCanvas(canvas, config);
-	parent.appendChild(canvas);
-	return [state, canvas] as const;
+export function initCursor(
+  parent: HTMLElement,
+  config?: Partial<ConfigData>,
+): Readonly<[CursorState, HTMLCanvasElement]> {
+  const canvas = document.createElement("canvas");
+  const state = initCursorWithCanvas(canvas, config);
+  parent.appendChild(canvas);
+  return [state, canvas] as const;
 }
 function draw_trail(
 	ctx: CanvasRenderingContext2D,
